@@ -28,7 +28,8 @@ version := "1.0"
 libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.3.0",
     "com.lihaoyi" %% "upickle" % "4.2.1",
-    "com.lihaoyi" %% "os-lib" % "0.11.4"
+    "com.lihaoyi" %% "os-lib" % "0.11.4",
+    "org.locationtech.jts" % "jts-core" % "1.20.0"
 )
 
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,

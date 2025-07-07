@@ -1,5 +1,0 @@
-package spatial
-
-class QuadTree {
-  
-}

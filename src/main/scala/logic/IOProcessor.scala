@@ -9,12 +9,17 @@ object IOProcessor {
     val path = Path(filePath, os.pwd)
     os.read(path)
   }
-  
-  def decodeJson[A: Reader](jsonStr: String): List[A] = {
+
+  def decodeJson[A: ReadWriter](jsonStr: String): List[A] = {
     upickle.default.read[List[A]](ujson.read(jsonStr))
   }
 
+  def encodeJson[A: ReadWriter](data: List[A]): String = {
+    upickle.default.write(data)
+  }
 
-  // todo
-  //def writeResults(filePath: String): List[Result]
+  def writeJson(filePath: String, data: String): Unit = {
+    val path = Path(filePath, os.pwd)
+    os.write(path, data)
+  }
 }

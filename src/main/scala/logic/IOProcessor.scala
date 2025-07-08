@@ -20,6 +20,6 @@ object IOProcessor {
 
   def writeJson(filePath: String, data: String): Unit = {
     val path = Path(filePath, os.pwd)
-    os.write(path, data)
+    os.write.over(path, data)
   }
 }

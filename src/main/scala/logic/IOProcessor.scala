@@ -5,6 +5,14 @@ import os._
 import models._
 
 object IOProcessor {
+  // def readJson(filePath: String): Option[String] = {
+  //   val path = Path(filePath, os.pwd)
+  //   if (os.exists(path))
+  //     Some(os.read(path))
+  //   else
+  //     None
+  // }
+
   def readJson(filePath: String): String = {
     val path = Path(filePath, os.pwd)
     os.read(path)

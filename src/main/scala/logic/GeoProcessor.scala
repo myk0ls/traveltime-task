@@ -7,12 +7,21 @@ import _root_.models.Location
 import spatial.GeoPoint
 import spatial.Edge
 import spatial._
+import _root_.models.Result
 
 object GeoProcessor {
   def process(locations: List[Location], regions: List[Region]) = {
     val polygons = regions.flatMap(toPolygons)
 
-    val results = PointInPolygon.rayCastingAlgorithm(locations, polygons)
+    val results: List[Result] = regions.map { region =>
+      val insideLocations = polygons
+        .filter(p => p.name == region.name)
+        .flatMap(p => PointInPolygon.rayCastingAlgorithm(locations, p))
+        .distinct
+
+      Result(region.name, insideLocations)
+    }
+
     results
   } 
   
@@ -23,9 +32,6 @@ object GeoProcessor {
   def toPolygon(name: String, points: List[GeoPoint]): Polygon = {
     val edges = points.zip(points.tail :+ points.head).map { case (a, b) => Edge(a, b) }
     val polygon = Polygon(name, edges)
-
-    //println("name of polygon: " + polygon.name)
-    //polygon.edges.foreach(println)
 
     polygon
   }

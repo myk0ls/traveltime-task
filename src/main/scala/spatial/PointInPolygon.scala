@@ -5,24 +5,16 @@ import Math._
 import Double._
 
 object PointInPolygon {
-  def rayCastingAlgorithm(locations: List[Location], polygons: List[Polygon]) = {
-    val resultList: List[Result] = polygons.map { p =>
-      println(p.name)
+  def rayCastingAlgorithm(locations: List[Location], polygon: Polygon) = {
+    val insideLocationNames = locations.flatMap { location =>
+      val intersections = polygon.edges.count(edge => rayIntersectsSegment(location.coordinates, edge))
+      val isInside = intersections % 2 == 1
+      //println(location.name + " inside??: " + isInside)
 
-      val insideLocationNames = locations.flatMap { location =>
-        val intersections = p.edges.count(edge => rayIntersectsSegment(location.coordinates, edge))
-        val isInside = intersections % 2 == 1
-        println(location.name + " inside??: " + isInside)
-
-        if (isInside) Some(location.name) else None
-      }
-
-      Result(p.name, insideLocationNames)
+      if (isInside) Some(location.name) else None
     }
 
-    println(resultList)
-
-    resultList
+    insideLocationNames
   }
 
   def rayIntersectsSegment(point: GeoPoint, edge: Edge): Boolean = {

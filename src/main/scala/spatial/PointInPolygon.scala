@@ -19,33 +19,33 @@ object PointInPolygon {
 
   def rayIntersectsSegment(point: GeoPoint, edge: Edge): Boolean = {
     //check the y's, if not bottom to top, reverse the edges
-    if (edge._1.coordinates._2 > edge._2.coordinates._2) 
-      return rayIntersectsSegment(point, Edge(edge._2, edge._1))
+    if (edge.pointA.coordinates._2 > edge.pointB.coordinates._2) 
+      return rayIntersectsSegment(point, Edge(edge.pointB, edge.pointA))
 
     // if ray on vertex, move it using epsilon
-    if (point.coordinates._2 == edge._1.coordinates._2 || point.coordinates._2 == edge._2.coordinates._2) 
+    if (point.coordinates._2 == edge.pointA.coordinates._2 || point.coordinates._2 == edge.pointB.coordinates._2) 
       return rayIntersectsSegment(GeoPoint(point.coordinates._1, point.coordinates._2 + epsilon), edge)
     
     //ray below or above
-    if (point.coordinates._2 < edge._1.coordinates._2 || point.coordinates._2 > edge._2.coordinates._2) 
+    if (point.coordinates._2 < edge.pointA.coordinates._2 || point.coordinates._2 > edge.pointB.coordinates._2) 
       return false
 
     //if point is to the right of polyg
-    if (point.coordinates._1 >= max(edge._1.coordinates._1, edge._2.coordinates._1)) 
+    if (point.coordinates._1 >= max(edge.pointA.coordinates._1, edge.pointB.coordinates._1)) 
       return false
 
     //if point is to the left
-    if (point.coordinates._1 < min(edge._1.coordinates._1, edge._2.coordinates._1)) 
+    if (point.coordinates._1 < min(edge.pointA.coordinates._1, edge.pointB.coordinates._1)) 
       return true
 
     //otherwise calculate and compare slopes
     val blue = 
-      if (abs(edge._1.coordinates._1 - point.coordinates._1) > MinValue) 
-        (point.coordinates._2 - edge._1.coordinates._2) / (point.coordinates._1 - edge._1.coordinates._1) 
+      if (abs(edge.pointA.coordinates._1 - point.coordinates._1) > MinValue) 
+        (point.coordinates._2 - edge.pointA.coordinates._2) / (point.coordinates._1 - edge.pointA.coordinates._1) 
       else MaxValue
     val red = 
-      if (abs(edge._1.coordinates._1 - edge._2.coordinates._1) > MinValue) 
-        (edge._2.coordinates._2 - edge._1.coordinates._2) / (edge._2.coordinates._1 - edge._1.coordinates._1) 
+      if (abs(edge.pointA.coordinates._1 - edge.pointB.coordinates._1) > MinValue) 
+        (edge.pointB.coordinates._2 - edge.pointA.coordinates._2) / (edge.pointB.coordinates._1 - edge.pointA.coordinates._1) 
       else MaxValue
     blue >= red
   }

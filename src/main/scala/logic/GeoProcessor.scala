@@ -1,13 +1,11 @@
 package logic
-package models
 
-import _root_.models.Region
+import models._
 import spatial.Polygon
-import _root_.models.Location
 import spatial.GeoPoint
 import spatial.Edge
 import spatial._
-import _root_.models.Result
+import _root_.models._
 
 object GeoProcessor {
   def process(locations: List[Location], regions: List[Region]) = {

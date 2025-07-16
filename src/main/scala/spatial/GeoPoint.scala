@@ -5,16 +5,15 @@ import models._
 case class GeoPoint(coordinates: (Double, Double))
 
 object GeoPoint {
-  // implicit val reader: ReadWriter[GeoPoint] = upickle.default.macroRW[GeoPoint]
 
   implicit val rw: ReadWriter[GeoPoint] = readwriter[ujson.Value].bimap[GeoPoint](
-      // serialize
-      gp => ujson.Arr(gp.coordinates._1, gp.coordinates._2),
-      // deserialize
-      json => GeoPoint((json(0).num), json(1).num)
-    )
+    // serialize
+    gp => ujson.Arr(validateLongitude(gp.coordinates._1), validateLatitude(gp.coordinates._2)),
+    // deserialize
+    json => GeoPoint((json(0).num), json(1).num)
+  )
 
-  def apply(longitude: Double, latitude: Double): Option[GeoPoint] = {
+  def create(longitude: Double, latitude: Double): Option[GeoPoint] = {
     if (
       validateLongitude(longitude) &&
       validateLatitude(latitude)

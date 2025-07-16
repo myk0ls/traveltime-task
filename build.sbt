@@ -29,7 +29,8 @@ libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.3.0",
     "com.lihaoyi" %% "upickle" % "4.2.1",
     "com.lihaoyi" %% "os-lib" % "0.11.4",
-    "org.scalameta" %% "munit" % "1.1.0" % Test
+    "org.scalameta" %% "munit" % "1.1.0" % Test,
+    "org.rogach" %% "scallop" % "5.0.0"
 )
 
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,

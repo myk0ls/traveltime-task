@@ -7,9 +7,9 @@ import Double._
 object PointInPolygon {
   def rayCastingAlgorithm(locations: List[Location], polygon: Polygon) = {
     val insideLocationNames = locations.flatMap { location =>
-      val intersections = polygon.edges.count(edge => rayIntersectsSegment(location.coordinates, edge))
+      val intersections =
+        polygon.edges.count(edge => rayIntersectsSegment(location.coordinates, edge))
       val isInside = intersections % 2 == 1
-      //println(location.name + " inside??: " + isInside)
 
       if (isInside) Some(location.name) else None
     }
@@ -18,34 +18,55 @@ object PointInPolygon {
   }
 
   def rayIntersectsSegment(point: GeoPoint, edge: Edge): Boolean = {
-    //check the y's, if not bottom to top, reverse the edges
-    if (edge.pointA.coordinates._2 > edge.pointB.coordinates._2) 
+    val (pX, pY) = point.coordinates
+    val (aX, aY) = edge.pointA.coordinates
+    val (bX, bY) = edge.pointB.coordinates
+
+    // check if the edge is valid by checking if it has length
+    if (edge.pointA.coordinates == edge.pointB.coordinates)
+      return false
+
+    // doing a check for edge's pointA and pointB y property,
+    // to ensure proper calculation by rearranging them
+    if (aY > bY)
       return rayIntersectsSegment(point, Edge(edge.pointB, edge.pointA))
 
-    // if ray on vertex, move it using epsilon
-    if (point.coordinates._2 == edge.pointA.coordinates._2 || point.coordinates._2 == edge.pointB.coordinates._2) 
-      return rayIntersectsSegment(GeoPoint(point.coordinates._1, point.coordinates._2 + epsilon), edge)
-    
-    //ray below or above
-    if (point.coordinates._2 < edge.pointA.coordinates._2 || point.coordinates._2 > edge.pointB.coordinates._2) 
+    // if point position is in on a vertex, we do a check to see if it aligns with the top or
+    // bottom of the edge, incase its the top, we return false,
+    // if its a bottom - we move it upwards to hit any edges.
+    // this way we're counting only bottom vertex only and dismissing the top.
+    if (pY == aY || pY == bY) {
+      val upperY = max(aY, bY)
+      if (pY == upperY)
+        return false
+      else
+        return rayIntersectsSegment(GeoPoint(pX, pY + epsilon), edge)
+    }
+
+    // checking if the point is above or below the edge's vertices
+    if (pY < aY || pY > bY)
       return false
 
-    //if point is to the right of polyg
-    if (point.coordinates._1 >= max(edge.pointA.coordinates._1, edge.pointB.coordinates._1)) 
+    // checking if the point is to the right of the edge
+    if (pX >= max(aX, bX))
       return false
 
-    //if point is to the left
-    if (point.coordinates._1 < min(edge.pointA.coordinates._1, edge.pointB.coordinates._1)) 
+    // Horizontal edge, if pointA.y is equal to pointB.y means that it could lie along the ray
+    if (aY == bY)
+      return false
+
+    // if point is to the left of the edge
+    if (pX < min(aX, bX))
       return true
 
-    //otherwise calculate and compare slopes
-    val blue = 
-      if (abs(edge.pointA.coordinates._1 - point.coordinates._1) > MinValue) 
-        (point.coordinates._2 - edge.pointA.coordinates._2) / (point.coordinates._1 - edge.pointA.coordinates._1) 
+    // otherwise calculate and compare slopes
+    val blue =
+      if (abs(aX - pX) > MinValue)
+        (pY - aY) / (pX - aX)
       else MaxValue
-    val red = 
-      if (abs(edge.pointA.coordinates._1 - edge.pointB.coordinates._1) > MinValue) 
-        (edge.pointB.coordinates._2 - edge.pointA.coordinates._2) / (edge.pointB.coordinates._1 - edge.pointA.coordinates._1) 
+    val red =
+      if (abs(aX - bX) > MinValue)
+        (bY - aY) / (bX - aX)
       else MaxValue
     blue >= red
   }

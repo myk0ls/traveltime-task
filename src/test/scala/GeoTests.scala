@@ -12,7 +12,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is to the left of an edge") {
     val point  = GeoPoint(0, 0)
     val edge   = Edge(GeoPoint(1, 1), GeoPoint(1, -1))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(result)
   }
@@ -20,7 +20,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is to the right of an edge") {
     val point  = GeoPoint(2, 0)
     val edge   = Edge(GeoPoint(1, 1), GeoPoint(1, -1))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -28,7 +28,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is above the edge") {
     val point  = GeoPoint(0, 2)
     val edge   = Edge(GeoPoint(1, 1), GeoPoint(1, -1))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -36,7 +36,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is below the edge") {
     val point  = GeoPoint(0, -2)
     val edge   = Edge(GeoPoint(1, 1), GeoPoint(1, -1))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -44,7 +44,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is on the starting edge vertex") {
     val point  = GeoPoint(0, 0)
     val edge   = Edge(GeoPoint(0, 0), GeoPoint(-2, -2))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -52,7 +52,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is on the end edge vertex") {
     val point  = GeoPoint(-2, -2)
     val edge   = Edge(GeoPoint(0, 0), GeoPoint(-2, -2))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(result)
   }
@@ -60,7 +60,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point very close to the edge (within epsilon)") {
     val point  = GeoPoint(0, -0.00001)
     val edge   = Edge(GeoPoint(0, 0), GeoPoint(-2, -2))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -68,7 +68,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point on the diagonal edge") {
     val point  = GeoPoint(2, 2)
     val edge   = Edge(GeoPoint(1, 1), GeoPoint(3, 3))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(result)
   }
@@ -76,7 +76,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point on the horizontal edge") {
     val point  = GeoPoint(0, 0)
     val edge   = Edge(GeoPoint(-2, 0), GeoPoint(2, 0))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -84,7 +84,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point on the vertical edge") {
     val point  = GeoPoint(0, 0)
     val edge   = Edge(GeoPoint(0, -2), GeoPoint(0, 2))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -92,7 +92,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - ray aligns with horizontal edge") {
     val point  = GeoPoint(0, 0)
     val edge   = Edge(GeoPoint(2, 0), GeoPoint(4, 0))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(!result)
   }
@@ -100,7 +100,7 @@ class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - ray aligns with edge vertex") {
     val point  = GeoPoint(0, 0)
     val edge   = Edge(GeoPoint(2, 0), GeoPoint(4, 4))
-    val result = PointInPolygon.rayIntersectsSegment(point.get, edge)
+    val result = PointInPolygon.rayIntersectsSegment(point, edge)
 
     assert(result)
   }
@@ -109,10 +109,10 @@ class GeoTests extends munit.FunSuite {
     val location = Location("location", GeoPoint(1, 1))
     val locList  = List[Location](location)
 
-    val bottomLeft  = GeoPoint(0, 0).get
-    val topLeft     = GeoPoint(0, 2).get
-    val topRight    = GeoPoint(2, 2).get
-    val bottomRight = GeoPoint(2, 0).get
+    val bottomLeft  = GeoPoint(0, 0)
+    val topLeft     = GeoPoint(0, 2)
+    val topRight    = GeoPoint(2, 2)
+    val bottomRight = GeoPoint(2, 0)
 
     val edges = Seq(
       Edge(bottomLeft, topLeft),
@@ -132,10 +132,10 @@ class GeoTests extends munit.FunSuite {
     val location = Location("location", GeoPoint(0, -2))
     val locList  = List[Location](location)
 
-    val left   = GeoPoint(-1, 0).get
-    val top    = GeoPoint(0, 2).get
-    val right  = GeoPoint(1, 0).get
-    val bottom = GeoPoint(0, -2).get
+    val left   = GeoPoint(-1, 0)
+    val top    = GeoPoint(0, 2)
+    val right  = GeoPoint(1, 0)
+    val bottom = GeoPoint(0, -2)
 
     val edges = Seq(
       Edge(left, top),

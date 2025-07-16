@@ -13,12 +13,10 @@ object IOProcessor {
 
     result match {
       case Success(value) if value.isEmpty =>
-        println("File is empty")
         Failure(new RuntimeException("Empty File"))
       case Success(value) =>
         Success(value)
       case Failure(exception) =>
-        println("Error reading JSON file")
         Failure(exception)
     }
   }
@@ -30,7 +28,6 @@ object IOProcessor {
       case Success(value) =>
         Success(value)
       case Failure(exception) =>
-        println("Error decoding JSON")
         Failure(exception)
     }
   }
@@ -42,7 +39,6 @@ object IOProcessor {
       case Success(value) =>
         Success(value)
       case Failure(exception) =>
-        println("Error encoding JSON")
         Failure(exception)
     }
   }
@@ -54,7 +50,6 @@ object IOProcessor {
       case Success(value) =>
         Success(())
       case Failure(exception) =>
-        println("Error writing data")
         Failure(exception)
     }
   }

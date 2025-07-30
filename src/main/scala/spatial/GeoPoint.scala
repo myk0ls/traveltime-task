@@ -2,15 +2,18 @@ package spatial
 import upickle.default._
 import models._
 
-case class GeoPoint(coordinates: (Double, Double))
+case class GeoPoint(lng: Double, lat: Double) {
+  def ===(that: GeoPoint): Boolean = {
+    lng == that.lng && lat == that.lat
+  }
+}
 
 object GeoPoint {
-
   implicit val rw: ReadWriter[GeoPoint] = readwriter[ujson.Value].bimap[GeoPoint](
     // serialize
-    gp => ujson.Arr(validateLongitude(gp.coordinates._1), validateLatitude(gp.coordinates._2)),
+    gp => ujson.Arr(gp.lng, gp.lat),
     // deserialize
-    json => GeoPoint((json(0).num), json(1).num)
+    json => GeoPoint.create(json(0).num, json(1).num).getOrElse(GeoPoint(0, 0))
   )
 
   def create(longitude: Double, latitude: Double): Option[GeoPoint] = {

@@ -14,15 +14,16 @@ class IOTests extends munit.FunSuite {
     val tempDir: Path       = os.temp.dir(testPath)
     val testFile: Path      = os.temp(fileContent, tempDir)
 
-    val result = IOProcessor.readJson(testFile.toString())
-
-    assertEquals(result.getOrElse(""), fileContent)
+    val result = IOProcessor.readJson(testFile)
 
     os.remove.all(tempDir)
+
+    assertEquals(result.getOrElse(""), fileContent)
   }
 
   test("readJson - non existant file") {
-    val result = IOProcessor.readJson("123")
+    val testFile: Path = Path("file123", testPath)
+    val result         = IOProcessor.readJson(testFile)
 
     assert(result.isFailure)
   }
@@ -31,21 +32,21 @@ class IOTests extends munit.FunSuite {
     val tempDir: Path  = os.temp.dir(testPath)
     val testFile: Path = os.temp("", tempDir)
 
-    val result = IOProcessor.readJson(testFile.toString())
-
-    assert(result.isFailure)
+    val result = IOProcessor.readJson(testFile)
 
     os.remove.all(tempDir)
+
+    assert(result.isFailure)
   }
 
   test("readJson - directory instead of file") {
     val tempDir: Path = os.temp.dir(testPath)
 
-    val result = IOProcessor.readJson(tempDir.toString())
-
-    assert(result.isFailure)
+    val result = IOProcessor.readJson(tempDir)
 
     os.remove.all(tempDir)
+
+    assert(result.isFailure)
   }
 
   test("decodeJson - valid Location JSON") {
@@ -89,15 +90,15 @@ class IOTests extends munit.FunSuite {
     val tempDir: Path  = os.temp.dir(testPath)
     val testFile: Path = os.temp("", tempDir)
 
-    val result = IOProcessor.writeJson(testFile.toString(), "This is a test!")
-
-    assert(result.isSuccess)
+    val result = IOProcessor.writeJson(testFile, "This is a test!")
 
     os.remove.all(tempDir)
+
+    assert(result.isSuccess)
   }
 
   test("writeJson - invalid path") {
-    val result = IOProcessor.writeJson("/invalid:/\\path/data.json", "This is a test!")
+    val result = IOProcessor.writeJson("/invalid/\\path/data.json", "This is a test!")
     assert(result.isFailure)
   }
 }

@@ -2,11 +2,13 @@ import munit.Assertions
 import munit._
 import spatial.PointInPolygon
 import spatial.GeoPoint
+import models.GeoArea
 import spatial.Edge
 import models.Location
 import spatial.Polygon
 import models.Region
 import logic.GeoProcessor
+import java.awt.geom.Area
 
 class GeoTests extends munit.FunSuite {
   test("rayIntersectsSegment - point is to the left of an edge") {
@@ -155,18 +157,22 @@ class GeoTests extends munit.FunSuite {
     val region = Region(
       name = "TestRegion",
       coordinates = List(
-        List(
-          GeoPoint(0.0, 0.0),
-          GeoPoint(1.0, 0.0),
-          GeoPoint(0.5, 1.0),
-          GeoPoint(0.0, 0.0)
+        GeoArea(
+          points = List(
+            GeoPoint(0.0, 0.0),
+            GeoPoint(1.0, 0.0),
+            GeoPoint(0.5, 1.0),
+            GeoPoint(0.0, 0.0)
+          )
         ),
-        List(
-          GeoPoint(2.0, 2.0),
-          GeoPoint(4.0, 2.0),
-          GeoPoint(4.0, 4.0),
-          GeoPoint(2.0, 4.0),
-          GeoPoint(2.0, 2.0)
+        GeoArea(
+          points = List(
+            GeoPoint(2.0, 2.0),
+            GeoPoint(4.0, 2.0),
+            GeoPoint(4.0, 4.0),
+            GeoPoint(2.0, 4.0),
+            GeoPoint(2.0, 2.0)
+          )
         )
       )
     )
@@ -191,7 +197,7 @@ class GeoTests extends munit.FunSuite {
       )
     )
 
-    val result = GeoProcessor.toPolygons(region)
+    val result = GeoProcessor.toPolygons(region).flatten
 
     assertEquals(result, expected)
   }
@@ -200,23 +206,27 @@ class GeoTests extends munit.FunSuite {
     val region = Region(
       name = "TestRegion",
       coordinates = List(
-        List(
-          GeoPoint(0.0, 0.0),
-          GeoPoint(1.0, 0.0),
-          GeoPoint(0.5, 1.0)
+        GeoArea(
+          points = List(
+            GeoPoint(0.0, 0.0),
+            GeoPoint(1.0, 0.0),
+            GeoPoint(0.5, 1.0)
+          )
         ),
-        List(
-          GeoPoint(2.0, 2.0),
-          GeoPoint(4.0, 2.0),
-          GeoPoint(4.0, 4.0),
-          GeoPoint(2.0, 4.0)
+        GeoArea(
+          points = List(
+            GeoPoint(2.0, 2.0),
+            GeoPoint(4.0, 2.0),
+            GeoPoint(4.0, 4.0),
+            GeoPoint(2.0, 4.0)
+          )
         )
       )
     )
 
     val expected: List[Polygon] = List[Polygon]()
 
-    val result = GeoProcessor.toPolygons(region)
+    val result = GeoProcessor.toPolygons(region).flatten
 
     assertEquals(result, expected)
   }

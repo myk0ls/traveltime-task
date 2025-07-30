@@ -8,8 +8,8 @@ import scala.util.Success
 import scala.util.Failure
 
 object IOProcessor {
-  def readJson(filePath: String): Try[String] = {
-    val result = Try(os.read(Path(filePath, os.pwd)))
+  def readJson(filePath: Path): Try[String] = {
+    val result = Try(os.read(filePath))
 
     result match {
       case Success(value) if value.isEmpty =>
@@ -24,33 +24,18 @@ object IOProcessor {
   def decodeJson[A: ReadWriter](jsonStr: String): Try[List[A]] = {
     val result = Try(upickle.default.read[List[A]](ujson.read(jsonStr)))
 
-    result match {
-      case Success(value) =>
-        Success(value)
-      case Failure(exception) =>
-        Failure(exception)
-    }
+    result
   }
 
   def encodeJson[A: ReadWriter](data: List[A]): Try[String] = {
     val result = Try(upickle.default.write(data))
 
-    result match {
-      case Success(value) =>
-        Success(value)
-      case Failure(exception) =>
-        Failure(exception)
-    }
+    result
   }
 
-  def writeJson(filePath: String, data: String): Try[Unit] = {
-    val result = Try(os.write.over(Path(filePath, os.pwd), data))
+  def writeJson(filePath: Path, data: String): Try[Unit] = {
+    val result = Try(os.write.over(filePath, data))
 
-    result match {
-      case Success(value) =>
-        Success(())
-      case Failure(exception) =>
-        Failure(exception)
-    }
+    result
   }
 }

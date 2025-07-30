@@ -7,7 +7,7 @@ import scala.util.Try
 
 object GeoProcessor {
   def process(locations: List[Location], regions: List[Region]) = {
-    val polygons = regions.flatMap(toPolygons)
+    val polygons = regions.flatMap(toPolygons).flatten
 
     val results: List[Result] = regions.map { region =>
       val insideLocations = polygons
@@ -21,19 +21,14 @@ object GeoProcessor {
     results
   }
 
-  def toPolygons(region: Region): List[Polygon] = {
-    region.coordinates.map(polygon => toPolygon(region.name, polygon))
-      .filter(polygon => polygon.edges.size >= 3)
-      .filter(isClosed)
+  def toPolygons(region: Region): List[Option[Polygon]] = {
+    region.coordinates
+      .map(area => toPolygon(region.name, area))
   }
 
-  def isClosed(polygon: Polygon) = {
-    polygon.edges.head.pointA.coordinates == polygon.edges.last.pointB.coordinates
-  }
-
-  def toPolygon(name: String, points: List[GeoPoint]) = {
-    val edges   = points.zip(points.tail).map { case (a, b) => Edge(a, b) }
-    val polygon = Polygon(name, edges)
+  def toPolygon(name: String, area: GeoArea): Option[Polygon] = {
+    val edges   = area.points.zip(area.points.tail).map { case (a, b) => Edge(a, b) }
+    val polygon = Polygon.create(name, edges)
 
     polygon
   }

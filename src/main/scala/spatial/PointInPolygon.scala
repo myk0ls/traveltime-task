@@ -18,12 +18,12 @@ object PointInPolygon {
   }
 
   def rayIntersectsSegment(point: GeoPoint, edge: Edge): Boolean = {
-    val (pX, pY) = point.coordinates
-    val (aX, aY) = edge.pointA.coordinates
-    val (bX, bY) = edge.pointB.coordinates
+    val (pX, pY) = (point.lng, point.lat)
+    val (aX, aY) = (edge.pointA.lng, edge.pointA.lat)
+    val (bX, bY) = (edge.pointB.lng, edge.pointB.lat)
 
     // check if the edge is valid by checking if it has length
-    if (edge.pointA.coordinates == edge.pointB.coordinates)
+    if (edge.pointA.===(edge.pointB))
       return false
 
     // doing a check for edge's pointA and pointB y property,

@@ -9,8 +9,9 @@ Make sure you have [sbt](https://www.scala-sbt.org/) installed.
 ### Run:
 
 ```bash
-sbt
-run input/locations.json input/regions.json output/results.json
+powershell: sbt "run --locations input/locations.json --regions input/regions.json --output output/results.json"
+bash: sbt run --locations input/locations.json --regions input/regions.json --output output/results.json
+
 
 //first arg location file
 //second arg region file
